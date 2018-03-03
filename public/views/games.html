@@ -1,0 +1,92 @@
+
+<md-content ng-if="isAuthenticated()" md-theme="docs-dark" class="md-padding" layout="column" layout-sm="column">
+  <br/><br/>
+<div ng-if="matched === 1">
+<div class="text-center">
+<h1 class="pure-splash-head" ng-hide="winner || cat">IT'S YOUR TURN <span class="blue">{{ currentPlayer.Name | uppercase}}</span></h1>
+<h1 class="pure-splash-head" ng-show="winner"><span class="blue">{{ currentPlayer.Name | uppercase}}</span> JUST <span class="red">WON</span> THE GAME!</h1>
+<h1 class="pure-splash-head" ng-show="cat">CAT(TIE) MEOW ! </h1>
+<h1 class="pure-splash-subhead" ng-show="winner || cat">REDIRECTING TO HOME IN 3..2..1...</h1>
+
+<div layout="row"  layout-sm="column" layout-margin layout-fill layout-padding>
+	<div style="width : 70%">
+      <div layout-margin   ng-repeat="row in board">
+        <md-button class="md-accent btn-tic-tac-toe md-raised"
+                ng-repeat="cell in row "
+                ng-disabled="isTaken(cell)||winnerDisabled();"
+                ng-class="cell.value"
+                ng-click="move(cell);">{{ cell.value }}</md-button>
+      </div>
+	  
+	  </div>
+	<!-- 
+		Ajout du block de chat à droite de la zone du jeux
+		!-->
+	 <md-whiteframe class="shadow info-box">
+      <md-content md-theme="docs-dark" class="md-padding" layout="column" layout-sm="column">
+	  <div layout="row" layout-margin layout-fill layout-padding>
+	  <div flex>
+            <h4 class="text-center pure-splash-subhead  underline-red">
+				<!--  Titre du block !-->
+              <span class="black">Chat</span>    
+            </h4>
+         <!--  Début liste des messages communiqués !-->
+	   <md-list flex style="height:250px;overflow-y:scroll">
+		<!--  On va parcourir la liste des messages et les afficher via 'ng-repeat' (boucle for) 
+					text in messages : parcourir les 'messages' et à chaque itération on a l'objet 'text' contenant les détails du messages
+					text (date d'envoi, username, message, avatar)
+		!-->
+        <md-list-item class="md-3-line" ng-repeat='text in messages' ng-click="null">
+		
+			<!--  affichage de l'image de l'utilisateur qui a envoyé le message!-->
+          <img ng-src="/static/avatars/{{text.avatar}}" class="md-avatar" alt="{{text.username}}" />
+          <div class="md-list-item-text" layout="column">
+			<!--  affichage du nom de l'utilisateur !-->
+            <h3 strong>{{text.username}}</h3>
+			<!--  affichage du message !-->
+            <h4>{{text.message}}</h4>
+			<!--  affichage de la date d'envoi avec le format voulu !-->
+			<p>{{text.date  | date:'MM/dd/yyyy HH:mm:ss'}}</p>
+          </div>
+        </md-list-item>
+		</md-list>
+        <!--  fin liste des messages communiqués !-->
+		
+          <md-list>
+		  <md-list-item>
+             <md-input-container flex>
+			 <!-- zone de saisie du nouveau message 
+				
+				ng-model='msg.text' : le message saisi sera associé à l'attribut "text" de la variable "msg" déclarée dans le controlleur
+				ng-keyup="$event.keyCode == 13 &&sendMessage(msg.text)" : le click sur le key Enter(code 13) du clavier permet l'envoi du message
+				!-->
+                <input ng-enter='sendMessage(msg.text)' ng-model='msg.text'  ng-keyup="$event.keyCode == 13 &&sendMessage(msg.text)" >
+              </md-input-container>
+               <!-- Bouton d'envoi du message!-->
+			  <md-button class="md-icon-button">
+			  <!-- 
+				md-font-icon="ion-email" : icon du bouton
+				 ng-click='sendMessage(msg.text)' : le click sur le bouton permet l'envoi du message
+				!-->
+				<md-icon md-font-icon="ion-email"  ng-click='sendMessage(msg.text)' style="font-size: 24px;  color: #ff5252;"></md-icon>
+			  </md-button>
+             
+		 </md-list-item>
+		 </md-list>
+          </div>
+        </div>
+      </md-content>
+    </md-whiteframe>
+     
+      <br/>
+  </div>
+</div>
+<div ng-if="matched === 0">
+
+  <h1 class=" text-center pure-splash-head">Matching a player right now...</h1>
+</div>
+</md-content>
+
+<md-content ng-if="!isAuthenticated()" md-theme="docs-dark" class="md-padding shadow" layout="column" layout-sm="column">
+  <h1>Please Register an account.</h1>
+</md-content>
